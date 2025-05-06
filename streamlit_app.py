@@ -38,7 +38,7 @@ if ingredients_list:
         VALUES ('{ingredients_string}', '{name_on_order}')
     """
 
-    st.write(my_insert_stmt)
+    #st.write(my_insert_stmt)
 
     if st.button('Submit Order'):
         session.sql(my_insert_stmt).collect()
