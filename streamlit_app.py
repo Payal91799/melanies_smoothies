@@ -1,61 +1,44 @@
-
 # Import python packages
 import streamlit as st
-import requests  # <-- Make sure this is here
 from snowflake.snowpark.functions import col
 
-
-# Title and description
-st.title(":cup_with_straw: Customize Your Smoothie! :cup_with_straw:")
-st.write("Choose the Fruits you want in your Smoothie!")
-
-# Name input
-name_on_order = st.text_input('Name on Smoothie:')
-st.write('The current movie title is', name_on_order)
-
-# Cache the Snowflake connection
-@st.cache_resource
-def get_snowflake_session():
-    cnx = st.connection("snowflake")
-    return cnx.session()
-
-session = get_snowflake_session()
-
-# Get fruit options
-fruit_df = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'))
-fruit_names = [row['FRUIT_NAME'] for row in fruit_df.collect()]
-
-# Multiselect for ingredients
-ingredients_list = st.multiselect(
-    'Choose up to 5 ingredients:',
-    fruit_names,
-    max_selections=5
+# Write directly to the app
+st.title(f":cup_with_straw: Customize Your Smoothie! :cup_with_straw:")
+st.write(
+  """Choose the Fruits you want in your Smoothie!
+  """
 )
 
-# If ingredients are selected
+name_on_order = st.text_input('Name on Smoothie:')
+st.write('The current movie title is',name_on_order)
+
+cnx = st.connection("snowflake")
+session = cnx.session()
+my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'))
+#st.dataframe(data=my_dataframe, use_container_width=True)
+
+ingredients_list = st.multiselect(
+    'Choose up to 5 ingredients:'
+    ,my_dataframe
+    ,max_selections=5
+)
+
 if ingredients_list:
-    ingredients_string = ' '.join(ingredients_list)
+    
 
-    my_insert_stmt = f"""
-        INSERT INTO smoothies.public.orders(ingredients, name_on_order)
-        VALUES ('{ingredients_string}', '{name_on_order}')
-    """
-
-    #st.write(my_insert_stmt)
-
-    if st.button('Submit Order'):
-        session.sql(my_insert_stmt).collect()
-        st.success('Your Smoothie is ordered!', icon="✅")
-        
-# New section to display smoothiefroot nutrition information
-
-smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
-if ingredients_list:
     ingredients_string = ''
 
     for fruit_chosen in ingredients_list:
         ingredients_string += fruit_chosen + ' '
-        smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-        sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
 
+    #st.write(ingredients_string)
+
+    my_insert_stmt = """ insert into smoothies.public.orders(ingredients,name_on_order)
+                values ('""" + ingredients_string + """','"""+name_on_order+"""')"""
+    
+    #st.write(my_insert_stmt)
+    
+    time_to_insert = st.button('Submit Order')
+    if time_to_insert:
+        session.sql(my_insert_stmt).collect()
+        st.success('Your Smoothie is ordered!', icon="✅")
