@@ -22,6 +22,8 @@ my_dataframe = session.table('smoothies.public.fruit_options').select(
 
 # Convert to Pandas for easier manipulation
 pd_df = my_dataframe.to_pandas()
+st.write("DataFrame preview:")
+st.dataframe(pd_df)
 
 # Multiselect widget for ingredients
 ingredients_list = st.multiselect(
