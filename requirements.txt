@@ -1,16 +1,4 @@
-name: sis-env
-channels:
-  - defaults
-  - conda-forge
-dependencies:
-  - python=3.10
-  - snowflake-snowpark-python
-  - streamlit
-  - pandas
-  - numpy
-  - matplotlib
-  - scikit-learn
-  - pip
-  - pip:
-      - altair
-      - seaborn
+# requirements.txt
+snowflake-snowpark-python
+streamlit
+
