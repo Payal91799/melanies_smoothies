@@ -1,6 +1,9 @@
+
 # Import python packages
 import streamlit as st
+import requests  # <-- Make sure this is here
 from snowflake.snowpark.functions import col
+
 
 # Title and description
 st.title(":cup_with_straw: Customize Your Smoothie! :cup_with_straw:")
