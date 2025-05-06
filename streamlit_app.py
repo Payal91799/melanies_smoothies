@@ -9,7 +9,6 @@ st.write(
   """
 )
 
-
 name_on_order = st.text_input('Name on Smoothie:')
 st.write('The current movie title is',name_on_order)
 
