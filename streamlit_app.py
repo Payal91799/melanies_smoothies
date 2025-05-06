@@ -22,9 +22,9 @@ my_dataframe = session.table('smoothies.public.fruit_options').select(
 pd_df = my_dataframe.to_pandas()
 st.dataframe(pd_df)
 
-  if st.button('Submit Order'):
-        session.sql(my_insert_stmt).collect()
-        st.success('Your Smoothie is ordered!', icon="✅")
+if st.button('Submit Order'):
+    session.sql(my_insert_stmt).collect()
+    st.success('Your Smoothie is ordered!', icon="✅")
       
 # Ingredient selector
 ingredients_list = st.multiselect(
